@@ -4,8 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Research Data Collection</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <h1>Research Data Collection</h1>
+  <div class="container">
+    <h1>Research Data Collection</h1>
+
+    <section id="form-section">
+      <h2>Participant Information</h2>
+      <form id="info-form">
+        <div id="info-fields"></div>
+        <button type="submit" class="btn-primary">Start Session</button>
+      </form>
+    </section>
+
+    <section id="camera-section" class="hidden">
+      <h2>Camera Preview</h2>
+      <video id="preview" autoplay muted playsinline></video>
+      <div id="camera-meta"></div>
+      <div class="controls">
+        <button id="start-recording" class="btn-primary" disabled>Start Recording</button>
+        <button id="stop-recording" class="btn-secondary" disabled>Stop Recording</button>
+      </div>
+      <div id="recording-timer">00:00</div>
+      <div id="upload-status"></div>
+      <div class="controls-footer">
+        <button id="cancel-session" class="btn-outline">Cancel Session</button>
+      </div>
+    </section>
+
+    <section id="done-section" class="hidden">
+      <h2>Recording Complete</h2>
+      <p class="done-text">Your session has been saved. Thank you for participating.</p>
+      <p style="text-align:center;">Session ID: <code id="session-id"></code></p>
+      <div class="controls-footer">
+        <button id="new-session-btn" class="btn-outline">New Session</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/recorder.js"></script>
 </body>
 </html>

@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #5c4d3c;
+  background-color: #f5f0e8;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #3d3522;
+  text-align: center;
+  margin: 0 0 40px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3d3522;
+  margin: 0 0 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8b7355;
+}
+
+input[type="text"] {
+  padding: 12px 16px;
+  font-size: 16px;
+  font-family: inherit;
+  border: 2px solid #d4c9b8;
+  border-radius: 4px;
+  background: #fff;
+  color: #5c4d3c;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #8b7355;
+}
+
+button {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #4a5d4a;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #3d4d3d;
+}
+
+.btn-secondary {
+  background-color: #8b7355;
+  color: #fff;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #7a6348;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #8b7355;
+  border: 2px solid #8b7355;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: #8b7355;
+  color: #fff;
+}
+
+video {
+  width: 100%;
+  max-width: 480px;
+  display: block;
+  margin: 0 auto 16px;
+  border-radius: 4px;
+  background: #000;
+}
+
+#camera-meta {
+  text-align: center;
+  font-size: 14px;
+  color: #8b7355;
+  margin-bottom: 24px;
+}
+
+#camera-meta p {
+  margin: 4px 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+#recording-timer {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #4a5d4a;
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+#upload-status {
+  text-align: center;
+  font-size: 14px;
+  color: #8b7355;
+  min-height: 20px;
+}
+
+.controls-footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.done-text {
+  text-align: center;
+  margin: 16px 0;
+  color: #4a5d4a;
+  font-size: 18px;
+}
+
+#session-id {
+  background: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.banner {
+  background: #fff3cd;
+  color: #856404;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"research-data-collection/internal/config"
+	"research-data-collection/internal/handlers"
 	"research-data-collection/internal/storage"
 )
 
@@ -19,6 +20,7 @@ func main() {
 
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", fs)
+	http.HandleFunc("/ws/upload", handlers.UploadHandler)
 
 	addr := ":8080"
 	log.Printf("listening on %s", addr)

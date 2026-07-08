@@ -20,6 +20,7 @@ func main() {
 
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", fs)
+	http.HandleFunc("/api/config", handlers.ConfigHandler)
 	http.HandleFunc("/ws/upload", handlers.UploadHandler)
 
 	addr := ":8080"

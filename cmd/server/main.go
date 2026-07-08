@@ -3,9 +3,20 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"research-data-collection/internal/config"
+	"research-data-collection/internal/storage"
 )
 
 func main() {
+	if err := config.Load("config.json"); err != nil {
+		log.Fatalf("config: %v", err)
+	}
+
+	if err := storage.Init(config.Get().StoragePath); err != nil {
+		log.Fatalf("storage: %v", err)
+	}
+
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", fs)
 

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"research-data-collection/internal/config"
 	"research-data-collection/internal/handlers"
@@ -32,7 +33,10 @@ func main() {
 		http.ServeFile(w, r, "web/dashboard.html")
 	})
 
-	addr := ":8080"
+	addr := os.Getenv("BIND_ADDR")
+	if addr == "" {
+		addr = ":8080"
+	}
 	log.Printf("listening on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
 }

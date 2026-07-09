@@ -23,6 +23,15 @@ func main() {
 	http.HandleFunc("/api/config", handlers.ConfigHandler)
 	http.HandleFunc("/ws/upload", handlers.UploadHandler)
 
+	http.HandleFunc("/api/admin/config", handlers.BasicAuth(handlers.AdminConfigHandler))
+	http.HandleFunc("/api/admin/sessions", handlers.BasicAuth(handlers.AdminSessionsHandler))
+	http.HandleFunc("/api/admin/sessions/file", handlers.BasicAuth(handlers.AdminFileHandler))
+	http.HandleFunc("/api/admin/sessions/zip", handlers.BasicAuth(handlers.AdminZipHandler))
+	http.HandleFunc("/api/admin/usage", handlers.BasicAuth(handlers.AdminUsageHandler))
+	http.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "web/dashboard.html")
+	})
+
 	addr := ":8080"
 	log.Printf("listening on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))

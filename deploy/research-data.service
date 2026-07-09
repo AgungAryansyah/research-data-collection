@@ -1,0 +1,18 @@
+[Unit]
+Description=Research Data Collection Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=research
+Group=research
+WorkingDirectory=/opt/research-data-collection
+ExecStart=/opt/research-data-collection/research-data-collection
+Restart=always
+RestartSec=5
+LimitNOFILE=65536
+Environment=BIND_ADDR=100.64.0.1:8080
+
+[Install]
+WantedBy=multi-user.target

@@ -1,7 +1,7 @@
 BINARY = research-data-collection
 TAILSCALE_IP ?= 100.64.0.1
 DOMAIN ?= research.agungaryansyah.com
-VPS_HOST ?= root@<vps-ip>
+VPS_HOST ?= root@vps-ip
 
 .PHONY: build run clean deploy-beefy nginx-config deploy-nginx
 
@@ -17,7 +17,7 @@ clean:
 
 deploy-beefy: build
 	@test -d /opt/research-data-collection || (echo "ERROR: /opt/research-data-collection not found. Create it first with: sudo mkdir -p /opt/research-data-collection && sudo chown $$USER /opt/research-data-collection"; exit 1)
-	cp $(BINARY) /opt/research-data-collection/
+	install -m 755 $(BINARY) /opt/research-data-collection/
 	cp -r web /opt/research-data-collection/
 	cp -n config.json /opt/research-data-collection/ 2>/dev/null || true
 	sed 's|100.64.0.1|$(TAILSCALE_IP)|g' deploy/research-data.service | sudo tee /etc/systemd/system/research-data.service > /dev/null

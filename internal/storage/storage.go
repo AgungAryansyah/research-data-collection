@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -28,6 +29,7 @@ type SessionWriter struct {
 	uuid         string
 	take         int
 	file         *os.File
+	buf          *bufio.Writer
 	bytesWritten int64
 	startedAt    time.Time
 }
@@ -68,17 +70,22 @@ func NewSessionWriter(uuid string, take int) (*SessionWriter, error) {
 		uuid:      uuid,
 		take:      take,
 		file:      f,
+		buf:       bufio.NewWriterSize(f, 1<<20),
 		startedAt: time.Now().UTC(),
 	}, nil
 }
 
 func (sw *SessionWriter) Write(data []byte) (int, error) {
-	n, err := sw.file.Write(data)
+	n, err := sw.buf.Write(data)
 	sw.bytesWritten += int64(n)
 	return n, err
 }
 
 func (sw *SessionWriter) Close(completed bool) error {
+	if err := sw.buf.Flush(); err != nil {
+		sw.file.Close()
+		return err
+	}
 	if err := sw.file.Close(); err != nil {
 		return err
 	}

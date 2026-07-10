@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"research-data-collection/internal/config"
 	"research-data-collection/internal/handlers"
@@ -37,6 +38,14 @@ func main() {
 	if addr == "" {
 		addr = ":8080"
 	}
+	srv := &http.Server{
+		Addr:              addr,
+		ReadTimeout:       30 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		WriteTimeout:      60 * time.Second,
+		IdleTimeout:       120 * time.Second,
+	}
+
 	log.Printf("listening on %s", addr)
-	log.Fatal(http.ListenAndServe(addr, nil))
+	log.Fatal(srv.ListenAndServe())
 }

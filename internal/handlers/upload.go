@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/websocket"
 
@@ -46,6 +47,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 	conn.SetReadLimit(100 << 20)
 
+	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 	_, metaBytes, err := conn.ReadMessage()
 	if err != nil {
 		log.Printf("ws read meta: %v", err)
@@ -72,6 +74,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	var finalized bool
 	defer func() { sw.Close(finalized) }()
 	for {
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
 		mt, msg, err := conn.ReadMessage()
 		if err != nil {
 			return

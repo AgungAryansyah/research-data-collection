@@ -46,6 +46,5 @@ func main() {
 		IdleTimeout:       120 * time.Second,
 	}
 
-	log.Printf("listening on %s", addr)
 	log.Fatal(srv.ListenAndServe())
 }

@@ -19,64 +19,38 @@ A lightweight website for collecting webcam video recordings and camera metadata
 ## Quick Start (Local)
 
 ```sh
-go run ./cmd/server
+make run
 # Open http://localhost:8080
 ```
 
 ## Deployment
 
+### 0. Setup (first time only)
+
+```sh
+# Beefy — install Go + create directory
+sudo apt install golang-go -y
+sudo mkdir -p /opt/research-data-collection
+sudo chown $USER /opt/research-data-collection
+
+# VPS — install nginx + certbot, get SSL cert
+sudo apt install nginx certbot python3-certbot-nginx -y
+sudo certbot --nginx -d research.agungaryansyah.com
+```
+
 ### 1. Beefy Machine
 
 ```sh
-# Clone and build
 git clone <repo-url> /opt/research-data-collection
 cd /opt/research-data-collection
-go build -buildvcs=false -o research-data-collection ./cmd/server
-
-# Set up service user
-sudo useradd -r -s /bin/false research
-sudo chown -R research:research /opt/research-data-collection
-
-# Set the Tailscale IP
-TAILSCALE_IP=$(tailscale ip -4)
-sudo sed -i "s|100.64.0.1|$TAILSCALE_IP|g" deploy/research-data.service
-
-# Install and start
-sudo cp deploy/research-data.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now research-data
-
-# Wait for config.json to be auto-generated, then set credentials
-sleep 2
-sudo -u research nano /opt/research-data-collection/config.json
-sudo systemctl restart research-data
+make deploy-beefy TAILSCALE_IP=$(tailscale ip -4) DOMAIN=research.agungaryansyah.com
+sudo -u research vim /opt/research-data-collection/config.json  # set admin credentials
 ```
 
 ### 2. VPS (nginx)
 
 ```sh
-# Install nginx + certbot
-sudo apt install nginx certbot python3-certbot-nginx -y
-
-# Copy and configure the nginx template
-scp deploy/nginx.conf user@vps:/tmp/nginx-research.conf
-ssh user@vps
-
-# Replace placeholders with real values
-TAILSCALE_IP=<beefy-tailscale-ip>
-sudo sed -i "s|<beefy-tailscale-ip>|$TAILSCALE_IP|g" /tmp/nginx-research.conf
-sudo sed -i 's|research.yourdomain.com|research.agungaryansyah.com|g' /tmp/nginx-research.conf
-
-# Install config
-sudo cp /tmp/nginx-research.conf /etc/nginx/sites-available/research
-sudo ln -s /etc/nginx/sites-available/research /etc/nginx/sites-enabled/
-sudo rm -f /etc/nginx/sites-enabled/default
-
-# Get SSL certificate
-sudo certbot --nginx -d research.agungaryansyah.com
-
-# Verify and reload
-sudo nginx -t && sudo systemctl reload nginx
+make deploy-nginx TAILSCALE_IP=<beefy-tailscale-ip> DOMAIN=research.agungaryansyah.com VPS_HOST=root@<vps-ip>
 ```
 
 ### 3. DNS
@@ -89,21 +63,39 @@ Add an A record: `research.agungaryansyah.com` → `<vps-public-ip>`
 curl -s https://research.agungaryansyah.com/ | head -5
 ```
 
-Should return the recording page HTML.
+### Redeploy after code changes
+
+```sh
+make deploy-beefy TAILSCALE_IP=$(tailscale ip -4)  # on beefy machine
+make deploy-nginx                                    # on dev machine (if nginx config changed)
+```
+
+## Makefile Targets
+
+| Target              | Runs on | Purpose                                   |
+| ------------------- | ------- | ----------------------------------------- |
+| `make run`          | Dev     | Start local server                        |
+| `make build`        | Any     | Compile binary                            |
+| `make deploy-beefy` | Beefy   | Build + install binary + restart systemd  |
+| `make deploy-nginx` | Dev     | Render nginx config + scp to VPS + reload |
+| `make nginx-config` | Any     | Print rendered nginx config to stdout     |
+| `make clean`        | Any     | Remove binary and `uploads/`              |
+
+All deploy targets accept `TAILSCALE_IP`, `DOMAIN`, and (for nginx) `VPS_HOST` variables.
 
 ## Configuration
 
-| Setting | Where | Default |
-|---------|-------|---------|
-| Listen address | `BIND_ADDR` env var | `:8080` |
-| Storage path | `config.json` → `storagePath` | `uploads` |
-| Video bitrate | `config.json` → `videoBitrate` | `5000000` (5 Mbps) |
-| Max resolution | `config.json` → `maxWidth`/`maxHeight` | `1920×1080` |
-| Chunk duration | `config.json` → `chunkDurationMs` | `500` ms |
-| Admin credentials | `config.json` → `adminUser`/`adminPass` | `admin` / `admin` |
-| Form fields | `config.json` → `infoFields` | `["Name", "Age", "Notes"]` |
-| Domain | `deploy/nginx.conf` | — |
-| Tailscale IP | `deploy/nginx.conf` + systemd env | — |
+| Setting           | Where                                   | Default                    |
+| ----------------- | --------------------------------------- | -------------------------- |
+| Listen address    | `BIND_ADDR` env var                     | `:8080`                    |
+| Storage path      | `config.json` → `storagePath`           | `uploads`                  |
+| Video bitrate     | `config.json` → `videoBitrate`          | `5000000` (5 Mbps)         |
+| Max resolution    | `config.json` → `maxWidth`/`maxHeight`  | `1920×1080`                |
+| Chunk duration    | `config.json` → `chunkDurationMs`       | `500` ms                   |
+| Admin credentials | `config.json` → `adminUser`/`adminPass` | `admin` / `admin`          |
+| Form fields       | `config.json` → `infoFields`            | `["Name", "Age", "Notes"]` |
+| Domain            | `deploy/nginx.conf`                     | —                          |
+| Tailscale IP      | `deploy/nginx.conf` + systemd env       | —                          |
 
 Most settings are editable from the admin dashboard at `/dashboard`.
 

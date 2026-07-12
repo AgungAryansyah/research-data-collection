@@ -10,10 +10,12 @@
   var configForm = S("#config-form");
   var configStatus = S("#config-status");
   var sessionsBody = S("#sessions-table tbody");
+  var connectionsBody = S("#connections-table tbody");
   var usageSummary = S("#usage-summary");
   var usageFill = S("#usage-fill");
 
   var auth = { user: "", pass: "" };
+  var refreshTimer = null;
 
   function apiFetch(url, opts) {
     opts = opts || {};
@@ -67,6 +69,8 @@
     auth = { user: "", pass: "" };
     S("#user").value = "";
     S("#pass").value = "";
+    clearInterval(refreshTimer);
+    refreshTimer = null;
     showLogin();
   });
 
@@ -84,6 +88,9 @@
       .catch(function (err) {
         loginError.innerHTML = '<div class="error">' + err.message + "</div>";
       });
+
+    refreshConnections();
+    refreshTimer = setInterval(refreshConnections, 5000);
   }
 
   function renderConfig(cfg) {
@@ -198,6 +205,33 @@
   function renderUsage(usage) {
     usageSummary.textContent = "Storage: " + formatBytes(usage.bytes);
     usageFill.style.width = "100%";
+  }
+
+  function refreshConnections() {
+    apiJson("/api/admin/connections")
+      .then(renderConnections)
+      .catch(function () {});
+  }
+
+  function renderConnections(conns) {
+    if (!conns.length) {
+      connectionsBody.innerHTML =
+        '<tr><td colspan="5" style="text-align:center;color:#8b7355;">No active connections.</td></tr>';
+      return;
+    }
+    var rows = "";
+    for (var i = 0; i < conns.length; i++) {
+      var c = conns[i];
+      rows +=
+        "<tr>" +
+        "<td><code>" + c.sessionUUID + "</code></td>" +
+        "<td>" + c.take + "</td>" +
+        "<td>" + (c.clientIP || "-") + "</td>" +
+        "<td>" + formatDate(c.connectedAt) + "</td>" +
+        "<td>" + formatBytes(c.bytesSent) + "</td>" +
+        "</tr>";
+    }
+    connectionsBody.innerHTML = rows;
   }
 
   function formatDate(iso) {

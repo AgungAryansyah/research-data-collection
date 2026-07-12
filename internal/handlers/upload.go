@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"log"
+	"net"
 	"net/http"
 	"strconv"
 	"time"
@@ -45,6 +46,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer conn.Close()
+
+	clientIP, _, _ := net.SplitHostPort(r.RemoteAddr)
+	cm := RegisterConn(sessionUUID, clientIP, r.UserAgent(), takeNum)
+	defer UnregisterConn(sessionUUID, takeNum)
+
 	conn.SetReadLimit(100 << 20)
 
 	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
@@ -86,6 +92,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 				log.Printf("ws write chunk: %v", err)
 				return
 			}
+			cm.BytesSent += int64(len(msg))
 		case websocket.TextMessage:
 			var fm finalizeMessage
 			if json.Unmarshal(msg, &fm) == nil && fm.Type == "finalize" {

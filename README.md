@@ -28,7 +28,7 @@ make run
 ### 0. Setup (first time only)
 
 ```sh
-# Beefy — install Go + create directory
+# Beefy — install Go + create runtime directory
 sudo apt install golang-go -y
 sudo mkdir -p /opt/research-data-collection
 sudo chown $USER /opt/research-data-collection
@@ -41,8 +41,9 @@ sudo certbot --nginx -d research.agungaryansyah.com
 ### 1. Beefy Machine
 
 ```sh
-git clone <repo-url> /opt/research-data-collection
-cd /opt/research-data-collection
+# Clone to your workspace (NOT into /opt/)
+git clone <repo-url> ~/research-data-collection
+cd ~/research-data-collection
 make deploy-beefy TAILSCALE_IP=$(tailscale ip -4) DOMAIN=research.agungaryansyah.com
 sudo -u research vim /opt/research-data-collection/config.json  # set admin credentials
 ```

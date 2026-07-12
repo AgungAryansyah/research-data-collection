@@ -33,6 +33,7 @@ func main() {
 	http.HandleFunc("/api/admin/sessions/file", handlers.BasicAuth(handlers.AdminFileHandler))
 	http.HandleFunc("/api/admin/sessions/zip", handlers.BasicAuth(handlers.AdminZipHandler))
 	http.HandleFunc("/api/admin/usage", handlers.BasicAuth(handlers.AdminUsageHandler))
+	http.HandleFunc("/api/admin/connections", handlers.BasicAuth(handlers.AdminConnectionsHandler))
 	http.HandleFunc("/dashboard", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "web/dashboard.html")
 	})

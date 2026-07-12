@@ -10,6 +10,7 @@ import (
 type ConnMeta struct {
 	SessionUUID string    `json:"sessionUUID"`
 	Take        int       `json:"take"`
+	Name        string    `json:"name"`
 	ClientIP    string    `json:"clientIP"`
 	UserAgent   string    `json:"userAgent"`
 	ConnectedAt time.Time `json:"connectedAt"`

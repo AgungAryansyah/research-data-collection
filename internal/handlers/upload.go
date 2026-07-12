@@ -71,6 +71,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if m, ok := meta.Info.(map[string]interface{}); ok {
+		for _, v := range m {
+			if s, ok := v.(string); ok {
+				cm.Name = s
+				break
+			}
+		}
+	}
+
 	sw, err := storage.NewSessionWriter(sessionUUID, takeNum)
 	if err != nil {
 		log.Printf("ws open take: %v", err)

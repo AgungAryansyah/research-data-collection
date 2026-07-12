@@ -142,7 +142,7 @@
   function renderSessions(sessions) {
     if (!sessions.length) {
       sessionsBody.innerHTML =
-        '<tr><td colspan="5" style="text-align:center;color:#8b7355;">No sessions yet.</td></tr>';
+        '<tr><td colspan="6" style="text-align:center;color:#8b7355;">No sessions yet.</td></tr>';
       return;
     }
 
@@ -182,6 +182,7 @@
 
       rows +=
         "<tr>" +
+        "<td>" + (s.name || "-") + "</td>" +
         "<td><code>" +
         s.uuid +
         "</code></td>" +
@@ -216,7 +217,7 @@
   function renderConnections(conns) {
     if (!conns.length) {
       connectionsBody.innerHTML =
-        '<tr><td colspan="5" style="text-align:center;color:#8b7355;">No active connections.</td></tr>';
+        '<tr><td colspan="6" style="text-align:center;color:#8b7355;">No active connections.</td></tr>';
       return;
     }
     var rows = "";
@@ -224,6 +225,7 @@
       var c = conns[i];
       rows +=
         "<tr>" +
+        "<td>" + (c.name || "-") + "</td>" +
         "<td><code>" + c.sessionUUID + "</code></td>" +
         "<td>" + c.take + "</td>" +
         "<td>" + (c.clientIP || "-") + "</td>" +

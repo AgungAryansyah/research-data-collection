@@ -11,6 +11,7 @@ import (
 
 type SessionMeta struct {
 	UUID      string          `json:"uuid"`
+	Name      string          `json:"name"`
 	CreatedAt time.Time       `json:"createdAt"`
 	Takes     []TakeMeta      `json:"takes"`
 	Info      json.RawMessage `json:"info,omitempty"`
@@ -115,6 +116,15 @@ func ListSessions() ([]SessionMeta, error) {
 		infoData, err := os.ReadFile(filepath.Join(dir, "info.json"))
 		if err == nil {
 			sm.Info = infoData
+			var infoMap map[string]interface{}
+			if json.Unmarshal(infoData, &infoMap) == nil {
+				for _, v := range infoMap {
+					if s, ok := v.(string); ok {
+						sm.Name = s
+						break
+					}
+				}
+			}
 		}
 		metaData, err := os.ReadFile(filepath.Join(dir, "metadata.json"))
 		if err == nil {

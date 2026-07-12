@@ -51,6 +51,26 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	cm := RegisterConn(sessionUUID, clientIP, r.UserAgent(), takeNum)
 	defer UnregisterConn(sessionUUID, takeNum)
 
+	conn.SetPongHandler(func(string) error {
+		conn.SetReadDeadline(time.Now().Add(20 * time.Second))
+		return nil
+	})
+
+	done := make(chan struct{})
+	defer close(done)
+	go func() {
+		ticker := time.NewTicker(15 * time.Second)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ticker.C:
+				conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(5*time.Second))
+			case <-done:
+				return
+			}
+		}
+	}()
+
 	conn.SetReadLimit(100 << 20)
 
 	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
@@ -89,7 +109,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	var finalized bool
 	defer func() { sw.Close(finalized) }()
 	for {
-		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		conn.SetReadDeadline(time.Now().Add(20 * time.Second))
 		mt, msg, err := conn.ReadMessage()
 		if err != nil {
 			return

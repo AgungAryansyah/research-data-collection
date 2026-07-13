@@ -102,6 +102,7 @@
     S("#cfg-adminuser").value = cfg.adminUser;
     S("#cfg-adminpass").value = "";
     S("#cfg-fields").value = (cfg.infoFields || []).join("\n");
+    S("#cfg-audio").checked = cfg.audioEnabled !== false;
   }
 
   configForm.addEventListener("submit", function (e) {
@@ -117,10 +118,14 @@
           .filter(Boolean);
       } else if (k === "chunkDurationMs" || k === "videoBitrate" || k === "maxWidth" || k === "maxHeight") {
         cfg[k] = parseInt(v, 10) || 0;
+      } else if (k === "audioEnabled") {
+        cfg[k] = true;
       } else {
         cfg[k] = k === "adminPass" && v === "" ? "" : String(v);
       }
     });
+
+    if (cfg.audioEnabled === undefined) cfg.audioEnabled = false;
 
     apiFetch("/api/admin/config", {
       method: "POST",

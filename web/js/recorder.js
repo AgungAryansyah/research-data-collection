@@ -123,7 +123,7 @@
     try {
       state.stream = await navigator.mediaDevices.getUserMedia({
         video: { width: { ideal: state.config.maxWidth }, height: { ideal: state.config.maxHeight } },
-        audio: true,
+        audio: state.config.audioEnabled !== false,
       });
       preview.srcObject = state.stream;
       await detectMetadata();

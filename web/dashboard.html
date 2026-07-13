@@ -48,6 +48,10 @@
           <div class="field"><label for="cfg-adminuser">Admin Username</label><input type="text" id="cfg-adminuser" name="adminUser" required></div>
           <div class="field"><label for="cfg-adminpass">Admin Password</label><input type="password" id="cfg-adminpass" name="adminPass" placeholder="leave blank to keep current" autocomplete="new-password"></div>
           <div class="field"><label for="cfg-fields">Info Fields (one per line)</label><textarea id="cfg-fields" name="infoFields" required></textarea></div>
+          <div class="field" style="flex-direction:row;align-items:center;gap:12px;">
+            <input type="checkbox" id="cfg-audio" name="audioEnabled" value="true" style="width:auto;">
+            <label for="cfg-audio" style="margin:0;">Record Audio</label>
+          </div>
           <button type="submit" class="btn-primary">Save Config</button>
         </form>
         <div id="config-status"></div>

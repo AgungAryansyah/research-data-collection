@@ -15,6 +15,7 @@ type Config struct {
 	AdminUser       string   `json:"adminUser"`
 	AdminPass       string   `json:"adminPass"`
 	InfoFields      []string `json:"infoFields"`
+	AudioEnabled    bool     `json:"audioEnabled"`
 }
 
 var (
@@ -32,6 +33,7 @@ func Defaults() Config {
 		AdminUser:       "admin",
 		AdminPass:       "admin",
 		InfoFields:      []string{"Name", "Age", "Notes"},
+		AudioEnabled:    false,
 	}
 }
 

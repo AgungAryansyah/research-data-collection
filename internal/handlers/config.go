@@ -13,6 +13,7 @@ type publicConfig struct {
 	MaxWidth        int      `json:"maxWidth"`
 	MaxHeight       int      `json:"maxHeight"`
 	InfoFields      []string `json:"infoFields"`
+	AudioEnabled    bool     `json:"audioEnabled"`
 }
 
 func ConfigHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,6 +29,7 @@ func ConfigHandler(w http.ResponseWriter, r *http.Request) {
 		MaxWidth:        c.MaxWidth,
 		MaxHeight:       c.MaxHeight,
 		InfoFields:      c.InfoFields,
+		AudioEnabled:    c.AudioEnabled,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
